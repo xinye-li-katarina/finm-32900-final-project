@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = config('DATA_DIR', default=(BASE_DIR / 'data'), cast=Path)
 OUTPUT_DIR = config('OUTPUT_DIR', default=(BASE_DIR / 'output'), cast=Path)
 WRDS_USERNAME = config("WRDS_USERNAME", default="")
-START_DATE = config('START_DATE', default='')
-END_DATE = config('END_DATE', default='')
-UPDATED_END_DATE = config('UPDATED_END_DATE', default='')
+START_DATE = config('START_DATE', default='1960-01-01')
+END_DATE = config('END_DATE', default='2012-12-31')
+UPDATED_END_DATE = config('UPDATED_END_DATE', default='2012-12-31')
 
 if __name__ == "__main__":
     
