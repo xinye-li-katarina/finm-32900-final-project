@@ -210,35 +210,63 @@ def pull_data_for_all_comparison_groups(db, comparison_group_dict, UPDATED=False
 
 def prep_datasets(datasets):
     """
-     Prepares datasets by converting 'datadate' to datetime,
-     grouping by year, and summing other columns.
+    Prepares datasets by converting 'datadate' to datetime,
+    filling missing monthly data within a company's active period.
 
-     Parameters:
-     - datasets (dict): A dictionary containing datasets.
+    Parameters:
+    - datasets (dict): A dictionary containing datasets.
 
-     Returns:
-     - dict: A dictionary containing prepped datasets.
-     """
+    Returns:
+    - dict: A dictionary containing prepped datasets.
+    """
     prepped_datasets = {}
-    for key in datasets.keys():
-        dataset = datasets[key]
+    
+    for key, dataset in datasets.items():
         if 'datadate' in dataset.columns:
-            # Convert 'datadate' to Timestamp objects
+            dataset = dataset.copy()
             dataset['datadate'] = pd.to_datetime(dataset['datadate'])
-            # Convert 'datadate' to quarterly periods and then to timestamp
-            dataset['datadate'] = dataset['datadate'].dt.to_period('Q').dt.to_timestamp()
-            dataset.fillna(0, inplace=True)
-        else:
-            print("'datadate' column not found in the dataset")
-        # Group by 'datadate' and sum the other columns
-        summed = dataset.groupby('datadate').agg({
-            'total_assets': 'sum',
-            'book_debt': 'sum',
-            'book_equity': 'sum',
-            'market_equity': 'sum'
-        }).reset_index()
 
-        prepped_datasets[key] = summed
+            # 存储填充后的数据
+            filled_df_list = []
+
+            # 按 gvkey 分组，分别填充每个公司的数据
+            for gvkey, group in dataset.groupby('gvkey'):
+                # 计算该 gvkey 的数据范围（从首次报告期到最后一次报告期）
+                date_range = pd.date_range(start=group['datadate'].min(), 
+                                           end=group['datadate'].max(), 
+                                           freq='M')
+
+                # 生成完整的月度 DataFrame
+                complete_dates = pd.DataFrame({'datadate': date_range})
+                complete_dates['gvkey'] = gvkey
+
+                # 合并原始数据，并前向填充
+                merged = pd.merge(complete_dates, group, on=['datadate', 'gvkey'], how='left').ffill()
+
+                # 只保留在该 gvkey 数据报告区间内的数据
+                merged = merged[merged['datadate'].between(group['datadate'].min(), group['datadate'].max())]
+
+                # 存入列表
+                filled_df_list.append(merged)
+
+            # 合并所有 gvkey 处理后的数据
+            filled_df = pd.concat(filled_df_list, ignore_index=True)
+
+            # 填充 NaN 为 0
+            filled_df.fillna(0, inplace=True)
+
+            # 按 datadate 聚合（即月度总和）
+            summed = filled_df.groupby('datadate').agg({
+                'total_assets': 'sum',
+                'book_debt': 'sum',
+                'book_equity': 'sum',
+                'market_equity': 'sum'
+            }).reset_index()
+
+            prepped_datasets[key] = summed
+
+        else:
+            print(f"'datadate' column not found in dataset {key}")
 
     return prepped_datasets
 
