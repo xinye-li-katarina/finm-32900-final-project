@@ -92,7 +92,6 @@ def get_comparison_group_data(db, linktable_df, start_date, end_date, ITERATE=Fa
     return fetch_financial_data(db, linktable_df, start_date, end_date, ITERATE=ITERATE)
 
 
-
 def read_in_manual_datasets():
     ticks = pd.read_csv('../data/manual/ticks.csv', sep="|")
     ticks['gvkey'] = ticks['gvkey'].fillna(0.0).astype(int)
