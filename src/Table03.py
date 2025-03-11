@@ -13,6 +13,8 @@ import Table03Load
 from Table03Load import quarter_to_date, date_to_quarter
 import Table03Analysis
 import Table02Prep
+import warnings
+warnings.filterwarnings("ignore")
 
 """
 Reads in manual dataset for primary dealers and holding companies and matches it with linkhist entry for company. 
@@ -21,6 +23,19 @@ Compiles and prepares this data to produce Table 03 from intermediary asset pric
 Also creates a summary statistics table and figure in LaTeX format.
 """
 
+def get_gvkey():
+
+    prim_dealers = pd.read_csv('../data/ticks_V3.csv').dropna()
+    prim_dealers['gvkey'] = prim_dealers['gvkey'].astype(int).astype(str).str.zfill(6)
+
+    raw_ticks = pd.read_csv('../data/pulled/match_RSSD_ID.csv')
+    raw_ticks['Start Date'] = pd.to_datetime(raw_ticks['Start Date'])
+    raw_ticks['Start Date']   = raw_ticks['Start Date'].dt.strftime('%Y-%m-%d')
+    raw_ticks['End Date'] = pd.to_datetime(raw_ticks['End Date'], errors='coerce')
+    raw_ticks['End Date'] = raw_ticks['End Date'].fillna(pd.to_datetime('2025-03-09'))
+    raw_ticks['End Date'] = raw_ticks['End Date'].dt.strftime('%Y-%m-%d')
+    prim_dealers = prim_dealers.merge(raw_ticks, on='Primary Dealer')
+    return prim_dealers
 
 def combine_bd_financials(UPDATED=False):
     """
@@ -76,8 +91,8 @@ def calculate_ratios(data):
     """
     data['market_cap_ratio'] = data['market_equity'] / (data['book_debt'] + data['market_equity'])
     data['book_cap_ratio'] = data['book_equity'] / (data['book_debt'] + data['book_equity'])
-    data['aem_leverage'] = data['bd_fin_assets'] / (data['bd_fin_assets'] - data['bd_liabilities'])
-    data['aem_leverage_ratio'] = 1 / data['aem_leverage']
+    data['aem_leverage_ratio'] = data['bd_fin_assets'] / (data['bd_fin_assets'] - data['bd_liabilities'])
+    # data['aem_leverage_ratio'] = 1 / data['aem_leverage']
     
     return data
 
@@ -166,9 +181,16 @@ def macro_variables(db):
     ff_facs_quarterly = ff_facs.to_timestamp(freq='M').resample('Q').last()
 
     # Pull CRSP Value Weighted Index and calculate quarterly market volatility
-    value_wtd_indx = Table03Load.pull_CRSP_Value_Weighted_Index(db)
+    # value_wtd_indx = Table03Load.pull_CRSP_Value_Weighted_Index(db)
+    sql_query = """
+    SELECT date, vwretd
+    FROM crsp.dsi as dsi
+    WHERE dsi.date >= '1969-01-01' AND dsi.date <= '2024-02-29'
+    """
+    value_wtd_indx = db.raw_sql(sql_query, date_cols=["date"])
     value_wtd_indx['date'] = pd.to_datetime(value_wtd_indx['date'])
-    annual_vol_quarterly = value_wtd_indx.set_index('date')['vwretd'].pct_change().groupby(pd.Grouper(freq='Q')).std().rename('mkt_vol')
+    # annual_vol_quarterly = value_wtd_indx.set_index('date')['vwretd'].pct_change().groupby(pd.Grouper(freq='Q')).std().rename('mkt_vol')
+    annual_vol_quarterly = value_wtd_indx.set_index('date')['vwretd'].groupby(pd.Grouper(freq='Q')).std().rename('mkt_vol')
 
     # Merge all macroeconomic data
     macro_merged = shiller_quarterly.merge(macro_quarterly, left_index=True, right_index=True, how='left')
@@ -361,7 +383,8 @@ def main(UPDATED=False):
 
     db = wrds.Connection(wrds_username=config.WRDS_USERNAME)
     
-    prim_dealers, _ = Table02Prep.prim_deal_merge_manual_data_w_linktable(UPDATED=UPDATED)
+    # prim_dealers, _ = Table02Prep.prim_deal_merge_manual_data_w_linktable(UPDATED=UPDATED)
+    prim_dealers = get_gvkey()
     dataset, _ = Table03Load.fetch_data_for_tickers(prim_dealers, db)
     prep_datast = prep_dataset(dataset, UPDATED=UPDATED)
     ratio_dataset = aggregate_ratios(prep_datast)
@@ -370,7 +393,7 @@ def main(UPDATED=False):
     panelA = create_panelA(ratio_dataset, macro_dataset)
     panelB = create_panelB(factors_dataset, macro_dataset)
 
-    Table03Analysis.create_summary_stat_table_for_data(panelB, UPDATED=UPDATED)
+    Table03Analysis.create_summary_stat_table_for_data(panelA, UPDATED=UPDATED)
     Table03Analysis.plot_figure02(ratio_dataset, UPDATED=UPDATED)
 
     correlation_panelA = calculate_correlation_panelA(panelA)
