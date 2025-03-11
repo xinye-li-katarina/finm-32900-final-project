@@ -93,7 +93,7 @@ def get_comparison_group_data(db, linktable_df, start_date, end_date, ITERATE=Fa
 
 
 def read_in_manual_datasets():
-    ticks = pd.read_csv('../data/manual/ticks.csv', sep="|")
+    ticks = pd.read_csv('../data/manual/ticks_V3.csv', sep="|")
     ticks['gvkey'] = ticks['gvkey'].fillna(0.0).astype(int)
     ticks['Permco'] = ticks['Permco'].fillna(0.0).astype(int)
     linktable = pd.read_csv('../data/manual/updated_linktable.csv')
