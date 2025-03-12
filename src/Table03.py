@@ -29,7 +29,7 @@ def get_gvkey():
     prim_dealers = pd.read_csv('../data/ticks_V3.csv').dropna()
     prim_dealers['gvkey'] = prim_dealers['gvkey'].astype(int).astype(str).str.zfill(6)
 
-    raw_ticks = pd.read_csv('../data/pulled/match_RSSD_ID.csv')
+    raw_ticks = pd.read_csv('../data/manual/match_RSSD_ID.csv')
     raw_ticks['Start Date'] = pd.to_datetime(raw_ticks['Start Date'])
     raw_ticks['Start Date']   = raw_ticks['Start Date'].dt.strftime('%Y-%m-%d')
     raw_ticks['End Date'] = pd.to_datetime(raw_ticks['End Date'], errors='coerce')
