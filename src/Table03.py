@@ -8,6 +8,7 @@ import numpy as np
 
 from statsmodels.tsa.ar_model import AutoReg
 from statsmodels.tsa.seasonal import seasonal_decompose
+import statsmodels.api as sm
 
 import Table03Load
 from Table03Load import quarter_to_date, date_to_quarter
@@ -132,10 +133,47 @@ def convert_ratios_to_factors(data):
     factors_df.drop(columns=['innovations_book_cap'], inplace=True)
 
     # Calculate the AEM leverage factor
-    factors_df['leverage_growth'] = data['aem_leverage_ratio'].pct_change().fillna(0)
-    decomposition = seasonal_decompose(factors_df['leverage_growth'], model='additive', period=4)
-    factors_df['seasonal'] = decomposition.seasonal
-    factors_df['aem_leverage_factor'] = factors_df['leverage_growth'] - factors_df['seasonal']
+
+    # factors_df['leverage_growth'] = data['aem_leverage_ratio'].pct_change().fillna(0)
+    # decomposition = seasonal_decompose(factors_df['leverage_growth'], model='additive', period=4)
+    # factors_df['seasonal'] = decomposition.seasonal
+    # factors_df['aem_leverage_factor'] = factors_df['leverage_growth'] - factors_df['seasonal']
+    df = data.copy()[['aem_leverage_ratio']]
+    df['ln_leverage'] = np.log(df['aem_leverage_ratio'])
+    df['dl_leverage'] = df['ln_leverage'].diff()  # Δln(Leverage)
+
+    # Construct Quanterly dummy variable
+    df['quarter'] = df.index.quarter  # 1,2,3,4
+    df['Q2'] = (df['quarter'] == 2).astype(int)
+    df['Q3'] = (df['quarter'] == 3).astype(int)
+    df['Q4'] = (df['quarter'] == 4).astype(int)
+    df['aem_leverage_factor'] = np.nan
+
+    # real time regression up to current time
+    for i in range(len(df)):
+        if i == 0:
+            continue
+        subdf = df.iloc[:i+1].dropna(subset=['dl_leverage'])
+        if len(subdf) < 10:
+            continue
+
+        # regression: dl_leverage ~ c + Q2 + Q3 + Q4
+        X = subdf[['Q2', 'Q3', 'Q4']]
+        X = sm.add_constant(X)
+        y = subdf['dl_leverage']
+        model = sm.OLS(y, X).fit()
+
+        # predict
+        current_index = subdf.index[-1]  
+        row_t = subdf.loc[current_index]
+        X_t = [1, row_t['Q2'], row_t['Q3'], row_t['Q4']]
+        yhat_t = model.predict([X_t])[0]
+        resid_t = row_t['dl_leverage'] - yhat_t
+        df.at[current_index, 'aem_leverage_factor'] = resid_t
+        
+    # Return only the factor columns
+    factors_df['aem_leverage_factor'] = df['aem_leverage_factor']
+    factors_df = factors_df.dropna()
 
     # Return only the factor columns
     return factors_df[['market_capital_factor', 'book_capital_factor', 'aem_leverage_factor']]
