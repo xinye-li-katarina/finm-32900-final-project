@@ -15,6 +15,20 @@ Also creates a summary statistics table and figure in LaTeX format.
 Performs unit tests to observe similarity to original table as well as other standard tests.
 """
 
+def get_gvkey():
+
+    prim_dealers = pd.read_csv('../data/ticks_V3.csv').dropna()
+    prim_dealers['gvkey'] = prim_dealers['gvkey'].astype(int).astype(str).str.zfill(6)
+
+    raw_ticks = pd.read_csv('../data/pulled/match_RSSD_ID.csv')
+    raw_ticks['Start Date'] = pd.to_datetime(raw_ticks['Start Date'])
+    raw_ticks['Start Date']   = raw_ticks['Start Date'].dt.strftime('%Y-%m-%d')
+    raw_ticks['End Date'] = pd.to_datetime(raw_ticks['End Date'], errors='coerce')
+    raw_ticks['End Date'] = raw_ticks['End Date'].fillna(pd.to_datetime('2025-03-09'))
+    raw_ticks['End Date'] = raw_ticks['End Date'].dt.strftime('%Y-%m-%d')
+    prim_dealers = prim_dealers.merge(raw_ticks, on='Primary Dealer')
+    return prim_dealers
+
 def fetch_financial_data(db, linktable, start_date, end_date, ITERATE=False):
     """
     Fetch financial data for given tickers and date ranges from the CCM database in WRDS.
@@ -93,7 +107,7 @@ def get_comparison_group_data(db, linktable_df, start_date, end_date, ITERATE=Fa
 
 
 def read_in_manual_datasets():
-    ticks = pd.read_csv('../data/useless/final_primary_V1.1.csv', sep=",")
+    ticks = pd.read_csv('../data/useless/ticks_V3.csv', sep=",")
     ticks['gvkey'] = ticks['gvkey'].fillna(0.0).astype(int)
     ticks['Permco'] = ticks['Permco'].fillna(0.0).astype(int)
     linktable = pd.read_csv('../data/manual/updated_linktable.csv')
