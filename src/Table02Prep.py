@@ -17,7 +17,7 @@ Performs unit tests to observe similarity to original table as well as other sta
 
 def get_gvkey():
 
-    prim_dealers = pd.read_csv('../data/ticks_V3.csv').dropna()
+    prim_dealers = pd.read_csv('../data/manual/ticks_V3.csv').dropna()
     prim_dealers['gvkey'] = prim_dealers['gvkey'].astype(int).astype(str).str.zfill(6)
 
     raw_ticks = pd.read_csv('../data/pulled/match_RSSD_ID.csv')
