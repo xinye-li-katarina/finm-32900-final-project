@@ -80,7 +80,8 @@ def plot_figure02(ratios, UPDATED=False):
     ratios = standardize_ratios_and_factors(ratios)
     ax.plot(ratios.index, ratios['market_cap_ratio']*100, label='Market Capital Ratio')
     ax.plot(ratios.index, ratios['book_cap_ratio']*100, label='Book Capital Ratio', color='green', linestyle='dotted')
-    ax.plot(ratios.index, 1 / ratios['aem_leverage_ratio'], label='AEM Leverage Ratio', color='orange', linestyle='--')
+    # ax.plot(ratios.index, 1 / ratios['aem_leverage_ratio'], label='AEM Leverage Ratio', color='orange', linestyle='--')
+    ax.plot(ratios.index, ratios['aem_leverage_ratio'], label='AEM Leverage Ratio', color='orange', linestyle='--')
 
     ax.xaxis.set_major_locator(mdates.YearLocator(10))
     ax.set_xlabel('Date')
