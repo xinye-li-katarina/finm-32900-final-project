@@ -431,8 +431,11 @@ def main(UPDATED=False):
     panelA = create_panelA(ratio_dataset, macro_dataset)
     panelB = create_panelB(factors_dataset, macro_dataset)
 
-    Table03Analysis.create_summary_stat_table_for_data(panelA, UPDATED=UPDATED)
+    Table03Analysis.create_summary_stat_table_for_panelA(panelA, UPDATED=UPDATED)
+    Table03Analysis.create_summary_stat_table_for_panelB(panelB, UPDATED=UPDATED)
+    Table03Analysis.plot_figure01(ratio_dataset, factors_dataset, UPDATED=UPDATED)
     Table03Analysis.plot_figure02(ratio_dataset, UPDATED=UPDATED)
+    Table03Analysis.plot_figure03(factors_dataset, UPDATED=UPDATED)
 
     correlation_panelA = calculate_correlation_panelA(panelA)
     correlation_panelB = calculate_correlation_panelB(panelB)
