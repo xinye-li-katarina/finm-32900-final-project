@@ -39,8 +39,9 @@ class TestFormattedTable(unittest.TestCase):
         # For auxiliary checks (gvkeys etc.), use the available functions:
         cls.db = wrds.Connection(wrds_username=config.WRDS_USERNAME)
         # 通过 clean_primary_dealers_data 和 load_link_table 获取数据
-        merged_main = Table02Prep.clean_primary_dealers_data(fname='Primary_Dealer_Link_Table3.csv')
-        link_hist = Table02Prep.load_link_table(fname='updated_linktable.csv')
+        # merged_main = Table02Prep.clean_primary_dealers_data(fname='Primary_Dealer_Link_Table3.csv')
+        #link_hist = Table02Prep.load_link_table(fname='updated_linktable.csv')
+        merged_main, link_hist = Table02Prep.prim_deal_merge_manual_data_w_linktable()
         link_dict = Table02Prep.create_comparison_group_linktables(link_hist, merged_main)
         cls.datasets = Table02Prep.pull_data_for_all_comparison_groups(cls.db, link_dict)
         cls.prepped = Table02Prep.prep_datasets(cls.datasets)
@@ -75,8 +76,9 @@ class TestFormattedTable(unittest.TestCase):
         We'll check that each dataset's gvkeys intersects well with the link table.
         """
         # 使用 clean_primary_dealers_data 和 load_link_table 替代原有的合并函数
-        merged_main = Table02Prep.clean_primary_dealers_data(fname='Primary_Dealer_Link_Table3.csv')
-        link_hist = Table02Prep.load_link_table(fname='updated_linktable.csv')
+        # merged_main = Table02Prep.clean_primary_dealers_data(fname='Primary_Dealer_Link_Table3.csv')
+        # link_hist = Table02Prep.load_link_table(fname='updated_linktable.csv')
+        merged_main, link_hist = Table02Prep.prim_deal_merge_manual_data_w_linktable()
         link_dict = Table02Prep.create_comparison_group_linktables(link_hist, merged_main)
 
         for gname, df in self.datasets.items():
