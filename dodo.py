@@ -10,6 +10,7 @@ from doit import task
 import os
 import warnings
 warnings.filterwarnings("ignore")
+
 def task_table02_main():
     original_dir = os.getcwd()
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -28,45 +29,72 @@ def task_table02_main():
         'verbosity': 2,
     }
 
-def task_pullnyfed_main():
-    original_dir = os.getcwd()
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+# def task_pullnyfed_main():
+#     original_dir = os.getcwd()
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Define a wrapper function for your action that resets the directory afterwards
-    def pull_nyfed():
-        os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import load_nyfed; load_nyfed.pull_nyfed_primary_dealers_list(load_nyfed.url)"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
-    return {
-        'actions': [pull_nyfed],
-        'verbosity': 2,
-    }
-def task_table01_main():
-    original_dir = os.getcwd()
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+#     # Define a wrapper function for your action that resets the directory afterwards
+#     def pull_nyfed():
+#         os.chdir(os.path.join(current_dir, "src"))
+#         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import load_nyfed; load_nyfed.pull_nyfed_primary_dealers_list(load_nyfed.url)"')
+#         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+#     return {
+#         'actions': [pull_nyfed],
+#         'verbosity': 2,
+#     }
+# def task_table01_main():
+#     original_dir = os.getcwd()
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Define a wrapper function for your action that resets the directory afterwards
-    def create_table01():
-        os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table_01_to_latex"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
-    return {
-        'actions': [create_table01],
-        'verbosity': 2,
-    }
-def task_tableA1_main():
-    original_dir = os.getcwd()
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+#     # Define a wrapper function for your action that resets the directory afterwards
+#     def create_table01():
+#         os.chdir(os.path.join(current_dir, "src"))
+#         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table_01_to_latex"')
+#         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+#     return {
+#         'actions': [create_table01],
+#         'verbosity': 2,
+#     }
+# def task_tableA1_main():
+#     original_dir = os.getcwd()
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Define a wrapper function for your action that resets the directory afterwards
-    def create_tableA1():
-        os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table_A1_to_latex"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
-    return {
-        'actions': [create_tableA1],
-        'verbosity': 2,
-    }
+#     # Define a wrapper function for your action that resets the directory afterwards
+#     def create_tableA1():
+#         os.chdir(os.path.join(current_dir, "src"))
+#         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table_A1_to_latex"')
+#         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+#     return {
+#         'actions': [create_tableA1],
+#         'verbosity': 2,
+#     }
+
+# def task_pullfredpast_main():
+#     original_dir = os.getcwd()
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
+
+#     # Define a wrapper function for your action that resets the directory afterwards
+#     def pull_fredpast():
+#         os.chdir(os.path.join(current_dir, "src"))
+#         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table03Load; Table03Load.load_fred_past(Table03Load.URL_FRED_2013)"')
+#         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+#     return {
+#         'actions': [pull_fredpast],
+#         'verbosity': 2,
+#     }
+# def task_pullshillerpe_main():
+#     original_dir = os.getcwd()
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
+
+#     # Define a wrapper function for your action that resets the directory afterwards
+#     def pull_shillerpe():
+#         os.chdir(os.path.join(current_dir, "src"))
+#         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table03Load; Table03Load.load_shiller_pe()"')
+#         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+#     return {
+#         'actions': [pull_shillerpe],
+#         'verbosity': 2,
+#     }
 
 def task_table03_main():
     original_dir = os.getcwd()
@@ -85,32 +113,23 @@ def task_table03_main():
         'actions': [create_table03, create_updated_table03],
         'verbosity': 2,
     }
-def task_pullfredpast_main():
+
+
+def task_table03_testing_main():
     original_dir = os.getcwd()
     current_dir = os.path.dirname(os.path.abspath(__file__))
 
     # Define a wrapper function for your action that resets the directory afterwards
-    def pull_fredpast():
+    def test_table03():
         os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table03Load; Table03Load.load_fred_past(Table03Load.URL_FRED_2013)"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
-    return {
-        'actions': [pull_fredpast],
-        'verbosity': 2,
-    }
-def task_pullshillerpe_main():
-    original_dir = os.getcwd()
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+        os.system('python -m unittest Table03_testing.py')
+        os.chdir(original_dir) # Reset the directory back to the original after the action is done
 
-    # Define a wrapper function for your action that resets the directory afterwards
-    def pull_shillerpe():
-        os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table03Load; Table03Load.load_shiller_pe()"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
     return {
-        'actions': [pull_shillerpe],
+        'actions': [test_table03],
         'verbosity': 2,
     }
+
 
 def task_create_latex_document():
     original_dir = os.getcwd()
