@@ -8,6 +8,10 @@ from doit.tools import run_once
 from doit import create_after
 from doit import task
 import os
+import subprocess
+import nbformat
+from nbclient import NotebookClient
+from nbconvert import HTMLExporter
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -131,6 +135,34 @@ def task_table03_testing_main():
     }
 
 
+def task_walkthrough_table():
+    original_dir = os.getcwd()
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Define a wrapper function for your action that resets the directory afterwards
+    def run_notebook():
+        os.chdir(os.path.join(current_dir, "src"))
+
+        # read notebook
+        with open("Walkthrough_table_2_and_table_3.ipynb", "r", encoding="utf-8") as f:
+            nb = nbformat.read(f, as_version=4)
+        client = NotebookClient(nb, timeout=600, kernel_name="python3")
+        client.execute()  
+
+        # HTMLExporter to convert from ipynb to html
+        html_exporter = HTMLExporter()
+        body, _ = html_exporter.from_notebook_node(nb)
+
+        with open("Walkthrough_table_2_and_table_3_executed.html", "w", encoding="utf-8") as f:
+            f.write(body)
+        os.chdir(original_dir) # Reset the directory back to the original after the action is done
+
+    return {
+        "actions": [run_notebook],
+        "verbosity": 2,
+    }
+
+
 def task_create_latex_document():
     original_dir = os.getcwd()
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -145,11 +177,6 @@ def task_create_latex_document():
         'actions': [create_latex_doc],
         'verbosity': 2,
     }
-
-
-
-import os
-import subprocess
 
 
 def task_compile_latex_docs():
