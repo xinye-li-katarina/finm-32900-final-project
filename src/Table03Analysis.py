@@ -7,7 +7,7 @@ import matplotlib.dates as mdates
 Is referenced by Table03. Creates tables to understand the data and figures to understand the different ratios.
 """
 
-def create_summary_stat_table_for_data(dataset, UPDATED=False):
+def create_summary_stat_table_for_panelA(dataset, UPDATED=False):
     """
     Creates a summary statistics table for the dataset.
     """
@@ -22,10 +22,31 @@ def create_summary_stat_table_for_data(dataset, UPDATED=False):
     latex_table = latex_table.replace(r'\multirow[t]{5}{*}', '')
 
     if UPDATED:
-        with open('../output/updated_table03_sstable.tex', 'w') as f:
+        with open('../output/updated_table03_panelA_sstable.tex', 'w') as f:
             f.write(latex_table)
     else:
-        with open('../output/table03_sstable.tex', 'w') as f:
+        with open('../output/table03_panelA_sstable.tex', 'w') as f:
+            f.write(latex_table)
+
+def create_summary_stat_table_for_panelB(dataset, UPDATED=False):
+    """
+    Creates a summary statistics table for the dataset.
+    """
+    summary_df = pd.DataFrame()
+    info = dataset.describe()
+    info = info.drop(['25%', '50%', '75%'])
+    summary_df = pd.concat([summary_df, info], axis=0)
+    
+    caption = "Summary statistics of capital factors and macro variables"
+
+    latex_table = summary_df.to_latex(index=True, multirow=True, multicolumn=True, escape=False, float_format="%.2f", caption=caption, label='tab:Table 2.1')
+    latex_table = latex_table.replace(r'\multirow[t]{5}{*}', '')
+
+    if UPDATED:
+        with open('../output/updated_table03_panelB_sstable.tex', 'w') as f:
+            f.write(latex_table)
+    else:
+        with open('../output/table03_panelB_sstable.tex', 'w') as f:
             f.write(latex_table)
 
     
@@ -65,9 +86,9 @@ def plot_figure01(ratios, factors, UPDATED=False):
     # plt.show()
 
     if UPDATED:
-        plt.savefig('../output/updated_table03_figure01.png')
+        plt.savefig('../output/updated_Intermediary_capital_ratio_and_risk_factor_figure.png')
     else:
-        plt.savefig('../output/table03_figure01.png')
+        plt.savefig('../output/Intermediary_capital_ratio_and_risk_factor_figure.png')
 
 
 def plot_figure02(ratios, UPDATED=False):
@@ -94,6 +115,28 @@ def plot_figure02(ratios, UPDATED=False):
     # plt.show()
 
     if UPDATED:
-        plt.savefig('../output/updated_table03_figure.png')
+        plt.savefig('../output/updated_table03_panelA_figure.png')
     else:
-        plt.savefig('../output/table03_figure.png')
+        plt.savefig('../output/table03_panelA_figure.png')
+
+def plot_figure03(factors, UPDATED=False):
+    """
+    Plots the levels of market capital ratio, book capital ratio, and AEM leverage ratio over time.
+    """
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    factors = standardize_ratios_and_factors(factors)
+    ax.plot(factors.index, factors['market_capital_factor'], label='Market Capital Factor')
+    ax.plot(factors.index, factors['book_capital_factor'], label='Book Capital Factor', color='green', linestyle='dotted')
+    ax.plot(factors.index, factors['aem_leverage_factor'], label='AEM Leverage Factor', color='orange', linestyle='--')
+
+    ax.xaxis.set_major_locator(mdates.YearLocator(10))
+
+    ax.set_title('AEM Leverage and Intermediary Capital Factor: Innovation')
+    ax.legend(loc='best')
+    # plt.show()
+
+    if UPDATED:
+        plt.savefig('../output/updated_table03_panelB_figure.png')
+    else:
+        plt.savefig('../output/table03_panelB_figure.png')
