@@ -29,6 +29,17 @@ def get_gvkey():
     prim_dealers = prim_dealers.merge(raw_ticks, on='Primary Dealer')
     return prim_dealers
 
+def get_gvkey_2():
+    prim_dealers = pd.read_excel('../data/manual/Primary_Dealer_Link_Table3.xlsx',sheet_name='Sheet1').dropna()
+    prim_dealers['gvkey'] = prim_dealers['gvkey'].astype(int).astype(str).str.zfill(6)
+
+    prim_dealers['Start Date'] = pd.to_datetime(prim_dealers['Start Date'])
+    prim_dealers['Start Date']   = prim_dealers['Start Date'].dt.strftime('%Y-%m-%d')
+    prim_dealers['End Date'] = pd.to_datetime(prim_dealers['End Date'], errors='coerce')
+    prim_dealers['End Date'] = prim_dealers['End Date'].fillna(pd.to_datetime('2025-03-09'))
+    prim_dealers['End Date'] = prim_dealers['End Date'].dt.strftime('%Y-%m-%d')
+    return prim_dealers    
+
 def fetch_financial_data(db, linktable, start_date, end_date, ITERATE=False):
     """
     Fetch financial data for given tickers and date ranges from the CCM database in WRDS.
@@ -49,12 +60,25 @@ def fetch_financial_data(db, linktable, start_date, end_date, ITERATE=False):
         end_date = f"{end_date_parts[1]}/{end_date_parts[2]}/{end_date_parts[0]}"
         # Convert 'Current' to actual end date and parse dates
         end_dates = [end_date if date == 'Current' else date for date in end_dates]
-        start_dates = [datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4
-                       else datetime.strptime(date, '%m/%d/%y') for date in start_dates]
+        # start_dates = [datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4
+        #                else datetime.strptime(date, '%m/%d/%y') for date in start_dates]
 
-        end_dates = [datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4
-                     else datetime.strptime(date, '%m/%d/%y') for date in end_dates]
+        # end_dates = [datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4
+        #              else datetime.strptime(date, '%m/%d/%y') for date in end_dates]
 
+        start_dates = [
+            datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4 else
+            datetime.strptime(date, '%m/%d/%y') if '/' in date else
+            datetime.strptime(date, '%Y-%m-%d')
+            for date in start_dates
+        ]
+        end_dates = [
+            datetime.strptime(date, '%m/%d/%Y') if len(date.split('/')[-1]) == 4 else
+            datetime.strptime(date, '%m/%d/%y') if '/' in date else
+            datetime.strptime(date, '%Y-%m-%d')
+            for date in end_dates
+        ]
+        
         for i, gvkey in enumerate(pgvkeys):
             pgvkey_str = f"'{str(gvkey).zfill(6)}'"
             query = f"""
@@ -107,9 +131,11 @@ def get_comparison_group_data(db, linktable_df, start_date, end_date, ITERATE=Fa
 
 
 def read_in_manual_datasets():
-    ticks = pd.read_csv('../data/useless/ticks_V3.csv', sep=",")
+    # ticks = pd.read_excel('../data/manual/Primary_Dealer_Link_Table3.xlsx')
+    ticks = get_gvkey_2()
+    # ticks = pd.read_csv('../data/manual/ticks.csv',sep='|')
     ticks['gvkey'] = ticks['gvkey'].fillna(0.0).astype(int)
-    ticks['Permco'] = ticks['Permco'].fillna(0.0).astype(int)
+    # ticks['Permco'] = ticks['Permco'].fillna(0.0).astype(int)
     linktable = pd.read_csv('../data/manual/updated_linktable.csv')
     return ticks, linktable
 
@@ -339,7 +365,7 @@ def create_ratios_for_table(prepped_datasets, UPDATED=False):
                 sum_column = filtered_sets[period][column] + filtered_dataset[column]
                 # Avoid division by zero
                 sum_column = sum_column.replace(0, np.nan)
-                ratio_dataframes[period][f'{column}_{key}'] = filtered_sets[period][column] / sum_column
+                ratio_dataframes[period][f'{column}_{key}'] = round(filtered_sets[period][column] / sum_column,2)
 
     # Combine the ratio dataframes for each period into one dataframe
     combined_ratio_df = pd.DataFrame()
@@ -362,7 +388,7 @@ def format_final_table(table, UPDATED=False):
     Returns:
     - DataFrame: The formatted table with a MultiIndex for columns.
     """
-    table = table.groupby('Period').mean()
+    table = table.groupby('Period').mean().round(2)
     grouped_table = table[
         ['total_assets_BD', 'total_assets_Banks', 'total_assets_Cmpust.', 'book_debt_BD', 'book_debt_Banks',
          'book_debt_Cmpust.', 'book_equity_BD', 'book_equity_Banks', 'book_equity_Cmpust.', 'market_equity_BD',
