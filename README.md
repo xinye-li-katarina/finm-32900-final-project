@@ -8,12 +8,9 @@ This repository contains our final project for replicating key results from the 
 
 The paper suggests that **capital shocks to financial intermediaries** can explain cross-sectional differences in expected returns across asset classes, including **stocks, bonds, options, commodities, currencies, and credit default swaps.** Based on this premise, our project focuses on:
 
-- **Constructing Risk Factors** based on financial intermediaries' capital ratios.
 - **Replicating Table 2:**  
   - This table measures the **relative size of major market makers** by calculating monthly ratios of total assets, book debt, book equity, and market equity relative to different market groups, then averaging these over time.
-- **Replicating Table 3:**  
-  - *Panel A:* Computes key ratios like the **Market Capital Ratio, Book Capital Ratio, and AEM Leverage Ratio** from 1970Q1 to 2012Q4 and examines their correlations with economic indicators (**E/P ratio, unemployment, GDP, financial conditions, and market volatility**).  
-  - *Panel B:* Constructs **risk factors** using these ratios and analyzes their relationships with macroeconomic growth rates.
+
 
 ---
 
