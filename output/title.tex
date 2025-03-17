@@ -7,9 +7,11 @@
 
 {
 \fontsize{10}{12}\selectfont
-James, Young Jin Song, Jaehwa Youm, Monica Panigrahy, and Jacob Simeral
+Hang Yu, Xinye Li
 }
 
-For our project, we were tasked with replicating 4 tables from the paper Intermediary asset pricing: New evidence from many asset classes. This paper aims to show how shocks to the equity capital ratio of financial intermediaries, specifically Primary Dealer counterparties of the New York Federal Reserve, exhibit substantial explanatory power for cross-sectional variance in expected returns across diverse asset classes, indicating the pivotal role of intermediary capital risk factor in understanding asset pricing dynamics. We split our work up amongst our selves to accomplish this task. Jacob and Young Jin worked on Tables 1, 2, and A,1. Monica and Jaehwa worked on Table 03.
-We found some success in replicating some of the more recent numbers but found much difficulty in determining the exact methodology used by the original authors to determine which holding company to use. We had two different attempts at this, the first was to choose the holding company that held the primary dealer for the longest period of time in a specified period - this data is in ticks.csv. The second method was to use the current holding company for a given primary dealer - this data is in ticksv2.csv. The third, which we did not have time to do, would be to have sub-periods for each holding company of a given primary dealer, which would likely produce the most accurate results.
-To pull our data, we used the Compustat database through our WRDS subscription. Specifically, we used the quarterly fundamentals table from Compustat.
+We meticulously replicated the original author's methodology to determine which holding company to use, significantly improving the accuracy of our replication. Most absolute discrepancies are within 0.25 (see Table03_testing.py).
+
+To obtain the data, we first identified companies' RSSDIDs by searching their names on the NIC (National Information Center). We then retrieved the holding company's RSSDID from the Compustat database and manually searched Google for any missing RSSDIDs, referencing The New York Times to verify ownership transfer dates. Next, we matched the corresponding Permco and gvkey to facilitate access to financial information. Our team accessed the Compustat database through a WRDS subscription, specifically utilizing the Compustat quarterly fundamentals dataset.
+
+While we achieved some success in replicating newer data, determining the exact approach the original author used to identify the appropriate holding company proved challenging. As a result, manual verification emerged as the most reliable method. We aligned holding companies based on the existence period of primary dealers, then matched them with the corresponding Permco and gvkey at each relevant time point. This approach significantly increased the number of identified companies compared to previous efforts. Our dataset now includes 73 primary dealers, a substantial improvement over the 43 identified in the previous study—an impressive step forward.
