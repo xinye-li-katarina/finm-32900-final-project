@@ -65,7 +65,7 @@ def escape_latex_special_chars(text):
 
 # Function to read content from a file
 def read_content(filename):
-    with open(base_dir / filename, 'r') as file:
+    with open(base_dir / filename, 'r', encoding='utf-8') as file:
         return file.read()
 
 # Include the content from each file
