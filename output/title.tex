@@ -1,17 +1,19 @@
 {
-\fontsize{12}{14}\selectfont
+\fontsize{18}{24}\selectfont
 \textnormal{Replicating} \textit{Intermediary asset pricing: New evidence from many asset classes}
 }
 
 \bigskip
 
 {
-\fontsize{10}{12}\selectfont
+\fontsize{12}{14}\selectfont
 Hang Yu, Xinye Li
 }
 
-We meticulously replicated the original author's methodology to determine which holding company to use, significantly improving the accuracy of our replication. Most absolute discrepancies are within 0.25 (see Table03_testing.py).
+We meticulously replicated the original author's methodology to determine which holding company to use, significantly improving the accuracy of our replication. Most absolute discrepancies are within 0.25 (see Table03\_testing.py).
 
-To obtain the data, we first identified companies' RSSDIDs by searching their names on the NIC (National Information Center). We then retrieved the holding company's RSSDID from the Compustat database and manually searched Google for any missing RSSDIDs, referencing The New York Times to verify ownership transfer dates. Next, we matched the corresponding Permco and gvkey to facilitate access to financial information. Our team accessed the Compustat database through a WRDS subscription, specifically utilizing the Compustat quarterly fundamentals dataset.
+\par
+To obtain the data, we first identified companies' RSSDIDs by searching their names on the NIC (National Information Center). We then retrieved the holding company's RSSDID from the Compustat database and manually searched Google for any missing RSSDIDs, referencing The New York Times to verify ownership transfer dates. Next, we matched the corresponding Permco and \texttt{gvkey} to facilitate access to financial information. Our team accessed the Compustat database through a WRDS subscription, specifically utilizing the Compustat quarterly fundamentals dataset.
 
-While we achieved some success in replicating newer data, determining the exact approach the original author used to identify the appropriate holding company proved challenging. As a result, manual verification emerged as the most reliable method. We aligned holding companies based on the existence period of primary dealers, then matched them with the corresponding Permco and gvkey at each relevant time point. This approach significantly increased the number of identified companies compared to previous efforts. Our dataset now includes 73 primary dealers, a substantial improvement over the 43 identified in the previous study—an impressive step forward.
+\par
+While we achieved some success in replicating newer data, determining the exact approach the original author used to identify the appropriate holding company proved challenging. As a result, manual verification emerged as the most reliable method. We aligned holding companies based on the existence period of primary dealers, then matched them with the corresponding Permco and \texttt{gvkey} at each relevant time point. This approach significantly increased the number of identified companies compared to previous efforts. Our dataset now includes 73 primary dealers, a substantial improvement over the 43 identified in the previous study---an impressive step forward.
