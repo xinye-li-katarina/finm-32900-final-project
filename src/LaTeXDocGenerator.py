@@ -47,8 +47,11 @@ files = [
     "Intermediary_capital_ratio_and_risk_factor_figure.png",
     "updated_Intermediary_capital_ratio_and_risk_factor_figure.png",
     "table03_writeup03.txt",
-    "table03_figure.png",
-    "updated_table03_figure.png",
+    "table03_panelA_figure.png",
+    "updated_table03_panelA_figure.png",
+    "table03_writeup04.txt",
+    "table03_panelB_figure.png",
+    "updated_table03_panelB_figure.png",
     "conclusion.txt"
 ]
 
