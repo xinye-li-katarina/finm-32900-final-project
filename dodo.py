@@ -24,13 +24,10 @@ def task_table02_main():
         os.chdir(os.path.join(current_dir, "src"))
         os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table02Prep; Table02Prep.main()"')
         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
-    def create_updated_table():
-        os.chdir(os.path.join(current_dir, "src"))
-        os.system('python -c "import sys; sys.path.insert(0, \'src\'); import Table02Prep; Table02Prep.main(UPDATED=True)"')
-        os.chdir(original_dir)  # Reset the directory back to the original after the action is done
+
     return {
-        'actions': [create_original_table, create_updated_table],
-        'verbosity': 2,
+        'actions': [create_original_table],  # 仅保留原始表格，不再运行更新表格
+        'verbosity': 1,
     }
 
 # def task_pullnyfed_main():

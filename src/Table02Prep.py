@@ -464,15 +464,15 @@ def main(UPDATED=False):
     - formatted_table (pandas.DataFrame): DataFrame containing the formatted table.
     """
     db = wrds.Connection(wrds_username=config.WRDS_USERNAME)
-    merged_main, link_hist = prim_deal_merge_manual_data_w_linktable(UPDATED=UPDATED)
+    merged_main, link_hist = prim_deal_merge_manual_data_w_linktable(UPDATED=False)
     comparison_group_link_dict = create_comparison_group_linktables(link_hist, merged_main)
-    datasets = pull_data_for_all_comparison_groups(db, comparison_group_link_dict, UPDATED=UPDATED)
+    datasets = pull_data_for_all_comparison_groups(db, comparison_group_link_dict, UPDATED=False)
     prepped_datasets = prep_datasets(datasets)
-    Table02Analysis.create_summary_stat_table_for_data(datasets,UPDATED=UPDATED)
-    table = create_ratios_for_table(prepped_datasets,UPDATED=UPDATED)
-    Table02Analysis.create_figure_for_data(table,UPDATED=UPDATED)
-    formatted_table = format_final_table(table, UPDATED=UPDATED)
-    convert_and_export_table_to_latex(formatted_table,UPDATED=UPDATED)
+    Table02Analysis.create_summary_stat_table_for_data(datasets,UPDATED=False)
+    table = create_ratios_for_table(prepped_datasets,UPDATED=False)
+    Table02Analysis.create_figure_for_data(table,UPDATED=False)
+    formatted_table = format_final_table(table, UPDATED=False)
+    convert_and_export_table_to_latex(formatted_table,UPDATED=False)
     return formatted_table
 
 
