@@ -26,7 +26,7 @@ def task_table02_main():
         os.chdir(original_dir)  # Reset the directory back to the original after the action is done
 
     return {
-        'actions': [create_original_table],  # 仅保留原始表格，不再运行更新表格
+        'actions': [create_original_table],  
         'verbosity': 1,
     }
 
