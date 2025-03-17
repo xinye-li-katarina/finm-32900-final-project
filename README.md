@@ -11,6 +11,9 @@ The paper suggests that **capital shocks to financial intermediaries** can expla
 - **Replicating Table 2:**  
   - This table measures the **relative size of major market makers** by calculating monthly ratios of total assets, book debt, book equity, and market equity relative to different market groups, then averaging these over time.
 
+- **Replicating Table 3:**  
+  - This table measures the pairwise correlations between various capital ratios/factors and macroeconomic indicators over the sample period from Q1 1970 to Q4 2012, using data from NYFED, NIC, CRSP-Compustat, Datastream, and several macroeconomic databases.
+
 
 ---
 
@@ -20,12 +23,9 @@ The paper suggests that **capital shocks to financial intermediaries** can expla
 - We **refined the primary dealer list** based on real data sources.
 - The **`ticks.csv` file was updated** using the correct **GVKEY** mappings for accuracy.
 
-### **Methodological Adjustments**
-- Adjusted **key ratio calculations**.
-- Improved the **accuracy and stability** of Table 3 replication results through refined calculations.
-
 ### **Output Generation & Automation**
 - All **tables are automatically generated** as LaTeX (`.tex`) files and stored in the `_output` directory.
+- **detailed procedures of data generation** as `.ipynb` file exported to `.html` file and stored in the `_output` directory.
 - Additional **statistical analysis**, including **descriptive statistics, correlation matrices, and trend visualizations**, was performed.
 - The entire project workflow is **fully automated** using the `dodo.py` script.
 
@@ -34,6 +34,7 @@ The paper suggests that **capital shocks to financial intermediaries** can expla
 ## **Project Structure**
 
 📂 **`notebooks`** – Jupyter notebooks for **data processing, ratio calculations, and table generation.**  
+📂 **`combined_documents`** – **LaTex PDF** for **table result, summary statistics, and trend visualization.**  
 📂 **`tests`** – Unit tests to **validate replication accuracy.**  
 📂 **`output`** – Auto-generated **LaTeX tables and supplementary figures.**  
 📂 **`config`** – Configuration files for **environment setup and automation.**  
@@ -48,10 +49,13 @@ The paper suggests that **capital shocks to financial intermediaries** can expla
   - Refined the **primary dealer list** and updated **`ticks.csv`** with accurate GVKEY data.
   - Created a **Jupyter Notebook** demonstrating data processing, ratio calculations, and table replication.
   - Replicated **Table 2**.
-  - Improved the **README structure.**  
+  - Designed the **README structure.**  
 
 - **Hang Yu**  
-  - ...
+  - Created a **Jupyter Notebook** demonstrating data processing, ratio calculations, and table replication.
+  - Replicated **Table 3**.
+  - Integrated all results and generated **Letex**, **PDF** and **html** document.
+  - Designed the **dodo.py** to automate the entire workflow.
 
 We maintained **regular collaboration** to ensure all tasks were aligned with project objectives.
 
@@ -59,8 +63,24 @@ We maintained **regular collaboration** to ensure all tasks were aligned with pr
 
 ## **Setup & Usage**
 
-...
+1. **You should have TexLive (or another Latex distribution) which has latexmk for the Latex generation**
 
+2. **Install Conda or Mamba**
+   - If you haven't installed [Miniforge](https://github.com/conda-forge/miniforge) yet, please download and install it (using `mamba` is recommended for faster dependency installation).  
+   - After installation, make sure the executable is added to your system's `PATH`.
+
+3. **Create and Activate the Python Environment**
+   ```bash
+   conda create -n py311 python=3.11
+   conda activate py311
+
+4. **Install Project Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   
+5. **Run the Project**
+   ```bash
+   python -m doit
 
 
 ## **Contact & Contributions**
